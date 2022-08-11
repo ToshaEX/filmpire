@@ -10,7 +10,7 @@ const App = () => {
     <div className={classes.root}>
       <CssBaseline />
       <NavBar/>
-      <main>
+      <main className={classes.content}>
       <div className={classes.toolbar} />
         <Switch>
           <Route exact path="/movies/:id">
