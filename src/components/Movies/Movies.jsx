@@ -8,9 +8,16 @@ import {
 import { useSelector } from "react-redux";
 import { useGetMoviesQuery } from "../../services/TMDB";
 import { MovieList } from "./../index";
+import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
 
 const Movies = () => {
-  const { data, error, isFetching } = useGetMoviesQuery();
+
+  const [page, setPage] = useState(1);
+  const { genreIdOrCategoryName, searchQuery } = useSelector(
+    (state) => state.currentGenreOrCategory
+  );
+  const { data, error, isFetching } = useGetMoviesQuery({genreIdOrCategoryName,page,searchQuery});
+
   if (isFetching) {
     return (
       <Box display="flex" justifyContent="center">
@@ -18,9 +25,10 @@ const Movies = () => {
       </Box>
     );
   }
+
   if (!data.results.length) {
     return (
-      <Box display="flex" alignItems="center" mt="20px">
+      <Box display="flex" justifyContent="center" alignItems="center" mt="20px">
         <Typography variant="H4">
           No movies that match that name.
           <br />
@@ -29,6 +37,7 @@ const Movies = () => {
       </Box>
     );
   }
+
   if (error) {
     return "An error has occurred";
   }
@@ -37,6 +46,7 @@ const Movies = () => {
       <MovieList movies={data} />
     </div>
   );
+
 };
 
 export default Movies;

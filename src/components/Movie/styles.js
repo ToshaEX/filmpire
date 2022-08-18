@@ -1,4 +1,3 @@
-import { Hidden } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
 export default makeStyles((theme) => ({
@@ -23,7 +22,7 @@ export default makeStyles((theme) => ({
     marginBottom: "10px",
     "&:hover": {
       transform: "scale(1.05)",
-      transition: "transform .5s ease-in-out",
+      //transition: "transform .5s ease-in-out",
     },
   },
   title: {
@@ -33,7 +32,7 @@ export default makeStyles((theme) => ({
     whiteSpace: "nowrap",
     overflow: "hidden",
     marginTop: "10px",
-    marginBottom: "0",
+    marginBottom: 0,
     textAlign: "center",
   },
 }));
