@@ -5,7 +5,9 @@ import useStyles from "./styles";
 import { Actors, Movies, MovieInformation, Profile, NavBar } from "./index";
 
 const App = () => {
+  
   const classes =useStyles();
+
   return (
     <div className={classes.root}>
       <CssBaseline />
