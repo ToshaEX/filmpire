@@ -5,7 +5,7 @@ export default makeStyles((theme) => ({
     padding: "10px",
   },
   links: {
-    alignItems: "center",
+    alignItem: "center",
     fontWeight: "bolder",
     textDecoration: "none",
     [theme.breakpoints.up("xs")]: {
@@ -28,7 +28,7 @@ export default makeStyles((theme) => ({
   title: {
     color: theme.palette.text.primary,
     textOverflow: "ellipsis",
-    width: "230px",
+    width: "100%",
     whiteSpace: "nowrap",
     overflow: "hidden",
     marginTop: "10px",

@@ -11,6 +11,10 @@ export const tmdbApi = createApi({
     getGenres: builder.query({
       query: () => `/genre/movie/list?api_key=${tmdbApiKey}`,
     }),
+    //* Get Movie
+    getMovie:builder.query({
+      query:(id)=>`/movie/${id}?append_to_response=videos,credits&api_key=${tmdbApiKey}`
+    }),
     //Get Movies by [Type]
     getMovies: builder.query({
       query: ({ genreIdOrCategoryName, page, searchQuery }) => {
@@ -24,21 +28,20 @@ export const tmdbApi = createApi({
           genreIdOrCategoryName &&
           typeof genreIdOrCategoryName === "string"
         ) {
-
-          return `movie/${genreIdOrCategoryName}?page=${page}&api_key=${tmdbApiKey}`;
+          return `/movie/${genreIdOrCategoryName}?page=${page}&api_key=${tmdbApiKey}`;
         }
         //get movies by genres
         if (
           genreIdOrCategoryName &&
           typeof genreIdOrCategoryName === "number"
         ) {
-          return `discover/movie?api_key=${tmdbApiKey}&page=${page}&with_genres=${genreIdOrCategoryName}`;
+          return `/discover/movie?api_key=${tmdbApiKey}&page=${page}&with_genres=${genreIdOrCategoryName}`;
         }
         //*get popular movies
-        return `movie/popular?page=${page}&api_key=${tmdbApiKey}`;
+        return `/movie/popular?page=${page}&api_key=${tmdbApiKey}`;
       },
     }),
   }),
 });
 
-export const {useGetMoviesQuery,useGetGenresQuery} = tmdbApi;
+export const {useGetMoviesQuery,useGetGenresQuery,useGetMovieQuery} = tmdbApi;

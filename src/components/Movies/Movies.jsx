@@ -42,9 +42,8 @@ const Movies = () => {
     return "An error has occurred";
   }
   return (
-    <div>
       <MovieList movies={data} />
-    </div>
+  
   );
 
 };

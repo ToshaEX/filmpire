@@ -9,7 +9,6 @@ const Movie = ({ movie, i }) => {
   return (
     <Grid
       item
-      rowSpacing={2}
       xs={12}
       sm={6}
       md={4}
