@@ -1,39 +1,62 @@
 import React from "react";
-import {Modal,Typography,Button,ButtonGroup,Grid,Box,CircularProgress,useMediaQuery,Rating} from "@mui/material"
-import {Movie as MovieIcon, Theaters, Language,PlusOne,Favorite, FavoriteBorderOutlined,Remove,ArrowBack} from "@mui/icons-material"
-import {Link,useParams} from "react-router-dom"
-import {useDispatch,useSelector} from "react-redux";
-import axios from "axios"
-import {useGetMovieQuery} from "../../services/TMDB"
-import useStyles from "./styles"
+import {
+  Modal,
+  Typography,
+  Button,
+  ButtonGroup,
+  Grid,
+  Box,
+  CircularProgress,
+  useMediaQuery,
+  Rating,
+  collapseClasses,
+} from "@mui/material";
+import {
+  Movie as MovieIcon,
+  Theaters,
+  Language,
+  PlusOne,
+  Favorite,
+  FavoriteBorderOutlined,
+  Remove,
+  ArrowBack,
+} from "@mui/icons-material";
+import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { useGetMovieQuery } from "../../services/TMDB";
+import useStyles from "./styles";
 import genreIcons from "./../../assets/genres";
-import {selectGenreOrCategory} from "../../features/currentGenreOrCategory"
+import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
 
 
 const MovieInformation = () => {
+  const dispatch = useDispatch();
+  const { id } = useParams();
+  const { data, isFetching, error } = useGetMovieQuery(id);
+  const isMovieFavorited = true;
+  const isMovieWatchedListed = true;
+  const classes = useStyles();
 
-   const dispatch = useDispatch();
-  const {id} =useParams();
-  const {data,isFetching,error}=useGetMovieQuery(id);
-  
-  const classes= useStyles();
-  
-  if(isFetching){
-    return(<Box display="flex" justifyContent="center" alignItems="center">
-    <CircularProgress size="8rem"/>
-    </Box>)
+  if (isFetching) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <CircularProgress size="8rem" />
+      </Box>
+    );
   }
-  
-  console.log(error)
+
+  console.log(error);
   if (error) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center">
-        <Link to="/" >Something has gone wrong... - Go Back</Link>
+        <Link to="/">Something has gone wrong... - Go Back</Link>
       </Box>
     );
   }
   console.log(data);
-
+  const addToFavorites = () => {};
+  const addToWatchedList = () => {};
 
   return (
     <Grid container className={classes.containerSpaceAround}>
@@ -84,11 +107,121 @@ const MovieInformation = () => {
                 className={classes.genreImage}
                 height={30}
               />
-              <Typography color="textPrimary" variant="subtitle1">
+              <Typography color="textPrimary" variant="subtitle1" >
                 {genre?.name}
               </Typography>
             </Link>
           ))}
+        </Grid>
+        <Typography variant="h5" gutterBottom style={{ marginTop: "10px" }}>
+          Overview
+        </Typography>
+        <Typography style={{ marginBottom: "2rem" }}>
+          {data?.overview}
+        </Typography>
+        <Typography variant="h5" gutterBottom style={{ marginBottom: "2rem" }}>
+          Top Cast
+        </Typography>
+        <Grid item container spacing={2}>
+          {data &&
+            data.credits.cast
+              .map(
+                (character, i) =>
+                  character.profile_path && (
+                    <Grid
+                      item
+                      key={i}
+                      xs={4}
+                      md={2}
+                      component={Link}
+                      to={`/actors${character.id}`}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <img
+                        className={classes.castImage}
+                        loading="lazy"
+                        src={`https://image.tmdb.org/t/p/w500/${character.profile_path}`}
+                        alt={character.name}
+                      />
+                      <Typography color="textPrimary">
+                        {character?.name}
+                      </Typography>
+                      <Typography color="textSecondary">
+                        {character?.character.split("/")[0]}
+                      </Typography>
+                    </Grid>
+                  )
+              )
+              .slice(0, 6)}
+        </Grid>
+        <Grid item container style={{ marginTop: "2rem" }}>
+          <div className={classes.buttonContainer}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              className={classes.buttonContainer}
+            >
+              <ButtonGroup size="medium" variant="outlined">
+                <Button
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={data?.homepage}
+                  endIcon={<Language />}
+                >
+                  Website
+                </Button>
+                <Button
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://www.imdb.com/title/${data?.imdb_id}`}
+                  endIcon={<MovieIcon />}
+                >
+                  IMDB
+                </Button>
+                <Button onClick={() => {}} href="#" endIcon={<Theaters />}>
+                  Trailer
+                </Button>
+              </ButtonGroup>
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              className={classes.buttonContainer}
+            >
+              <ButtonGroup size="small" variant="outlined">
+                <Button
+                  onClick={addToFavorites}
+                  endIcon={
+                    isMovieFavorited ? <FavoriteBorderOutlined /> : <Favorite />
+                  }
+                >
+                  {isMovieFavorited ? "Unfavorite" : "Favorite"}
+                </Button>
+                <Button
+                  onClick={addToWatchedList}
+                  endIcon={isMovieWatchedListed ? <Remove /> : <PlusOne />}
+                >
+                  Watchedlist
+                </Button>
+                <Button
+                  sx={{ borderColor: "primary.main", textUnderline: "none" }}
+                  endIcon={<ArrowBack />}
+                >
+                  <Typography
+                    style={{ textDecoration: "none" }}
+                    component={Link}
+                    to="/"
+                    color="inherit"
+                    variant="subtitle2"
+                  >
+                    Back
+                  </Typography>
+                </Button>
+              </ButtonGroup>
+            </Grid>
+          </div>
         </Grid>
       </Grid>
     </Grid>
