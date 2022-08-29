@@ -24,16 +24,18 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { useGetMovieQuery } from "../../services/TMDB";
+import { useGetMovieQuery,useGetRecommendationsQuery } from "../../services/TMDB";
 import useStyles from "./styles";
 import genreIcons from "./../../assets/genres";
 import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
+import {MovieList} from "../index"
 
 
 const MovieInformation = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const { data, isFetching, error } = useGetMovieQuery(id);
+  const {data:recommendations,isFetching:isRecommendationsIsFetching} =useGetRecommendationsQuery({list:"/recommendations",movie_id:id});
   const isMovieFavorited = true;
   const isMovieWatchedListed = true;
   const classes = useStyles();
@@ -54,7 +56,7 @@ const MovieInformation = () => {
       </Box>
     );
   }
-  console.log(data);
+  console.log(recommendations);
   const addToFavorites = () => {};
   const addToWatchedList = () => {};
 
@@ -107,7 +109,7 @@ const MovieInformation = () => {
                 className={classes.genreImage}
                 height={30}
               />
-              <Typography color="textPrimary" variant="subtitle1" >
+              <Typography color="textPrimary" variant="subtitle1">
                 {genre?.name}
               </Typography>
             </Link>
@@ -156,12 +158,7 @@ const MovieInformation = () => {
         </Grid>
         <Grid item container style={{ marginTop: "2rem" }}>
           <div className={classes.buttonContainer}>
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              className={classes.buttonContainer}
-            >
+            <Grid item xs={12} sm={6} className={classes.buttonContainer}>
               <ButtonGroup size="medium" variant="outlined">
                 <Button
                   target="_blank"
@@ -184,12 +181,7 @@ const MovieInformation = () => {
                 </Button>
               </ButtonGroup>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              className={classes.buttonContainer}
-            >
+            <Grid item xs={12} sm={6} className={classes.buttonContainer}>
               <ButtonGroup size="small" variant="outlined">
                 <Button
                   onClick={addToFavorites}
@@ -224,6 +216,17 @@ const MovieInformation = () => {
           </div>
         </Grid>
       </Grid>
+      <Box marginTop="5rem" width="100%">
+        <Typography variant="h3" gutterBottom align="center">
+          You might also like
+        </Typography>
+        {/* Loop through recommended movies... */}
+        {recommendations ? (
+          <MovieList movies={recommendations} numberOfMovies={12} />
+        ) : (
+          <Box>Sorry, nothing was found...</Box>
+        )}
+      </Box>
     </Grid>
   );
 };

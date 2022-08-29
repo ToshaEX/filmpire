@@ -1,7 +1,6 @@
-import {createApi,fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-const tmdbApiKey =process.env.REACT_APP_TMDB_KEY;
-
+const tmdbApiKey = process.env.REACT_APP_TMDB_KEY;
 
 export const tmdbApi = createApi({
   reducerPath: "tmdbApi",
@@ -12,15 +11,16 @@ export const tmdbApi = createApi({
       query: () => `/genre/movie/list?api_key=${tmdbApiKey}`,
     }),
     //* Get Movie
-    getMovie:builder.query({
-      query:(id)=>`/movie/${id}?append_to_response=videos,credits&api_key=${tmdbApiKey}`
+    getMovie: builder.query({
+      query: (id) =>
+        `/movie/${id}?append_to_response=videos,credits&api_key=${tmdbApiKey}`,
     }),
     //Get Movies by [Type]
     getMovies: builder.query({
       query: ({ genreIdOrCategoryName, page, searchQuery }) => {
         //Get movies by Search
         if (searchQuery) {
-          console.log("hello ",searchQuery);
+          console.log("hello ", searchQuery);
           return `/search/movie?query=${searchQuery}&api_key=${tmdbApiKey}&page=${page}`;
         }
         //get movies by category
@@ -41,7 +41,17 @@ export const tmdbApi = createApi({
         return `/movie/popular?page=${page}&api_key=${tmdbApiKey}`;
       },
     }),
+    getRecommendations: builder.query({
+      query: ({ movie_id, list }) =>
+        `/movie/${movie_id}/${list}?api_key=${tmdbApiKey}`,
+    }),
   }),
+  //* Get User Specific Lists
 });
 
-export const {useGetMoviesQuery,useGetGenresQuery,useGetMovieQuery} = tmdbApi;
+export const {
+  useGetMoviesQuery,
+  useGetGenresQuery,
+  useGetMovieQuery,
+  useGetRecommendationsQuery,
+} = tmdbApi;
