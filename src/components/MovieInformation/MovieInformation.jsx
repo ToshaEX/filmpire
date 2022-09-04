@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   Typography,
@@ -24,21 +24,25 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
-import { useGetMovieQuery,useGetRecommendationsQuery } from "../../services/TMDB";
+import {
+  useGetMovieQuery,
+  useGetRecommendationsQuery,
+} from "../../services/TMDB";
 import useStyles from "./styles";
 import genreIcons from "./../../assets/genres";
 import { selectGenreOrCategory } from "../../features/currentGenreOrCategory";
-import {MovieList} from "../index"
-
+import { MovieList } from "../index";
 
 const MovieInformation = () => {
   const dispatch = useDispatch();
   const { id } = useParams();
   const { data, isFetching, error } = useGetMovieQuery(id);
-  const {data:recommendations,isFetching:isRecommendationsIsFetching} =useGetRecommendationsQuery({list:"/recommendations",movie_id:id});
+  const { data: recommendations, isFetching: isRecommendationsIsFetching } =
+    useGetRecommendationsQuery({ list: "/recommendations", movie_id: id });
   const isMovieFavorited = true;
   const isMovieWatchedListed = true;
   const classes = useStyles();
+  const [isOpen, setIsOpen] = useState(false);
 
   if (isFetching) {
     return (
@@ -48,7 +52,6 @@ const MovieInformation = () => {
     );
   }
 
-  console.log(error);
   if (error) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center">
@@ -56,7 +59,7 @@ const MovieInformation = () => {
       </Box>
     );
   }
-  console.log(recommendations);
+ 
   const addToFavorites = () => {};
   const addToWatchedList = () => {};
 
@@ -176,7 +179,7 @@ const MovieInformation = () => {
                 >
                   IMDB
                 </Button>
-                <Button onClick={() => {}} href="#" endIcon={<Theaters />}>
+                <Button onClick={() => setIsOpen(true)} href="#" endIcon={<Theaters />}>
                   Trailer
                 </Button>
               </ButtonGroup>
@@ -227,6 +230,24 @@ const MovieInformation = () => {
           <Box>Sorry, nothing was found...</Box>
         )}
       </Box>
+      
+      <Modal
+        closeAfterTransition
+        className={classes.modal}
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+      >
+        {data?.videos?.results?.length > 0 && (
+          <iframe
+            autoPlay
+            className={classes.video}
+            frameBorder="0"
+            title="Trailer"
+            src={`https://www.youtube.com/embed/${data.videos.results[0].key}`}
+            allow="autoplay"
+          />
+        )}
+      </Modal>
     </Grid>
   );
 };
